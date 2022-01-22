@@ -1,6 +1,6 @@
 // Librairies
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import Colors from '../constants/Colors';
 
 // Composants
@@ -10,7 +10,12 @@ export default function Play() {
   return (
     <View style={styles.container}>
       <Logo />
-      <Text>Retrouvez le juste prix entre 0 et 1000</Text>
+      <Text style={styles.txt}>
+        Retrouvez le juste prix entre
+        <Text style={{ color: Colors.secondary, fontWeight: 'bold' }}> 0 </Text>
+        et
+        <Text style={{ color: Colors.secondary, fontWeight: 'bold' }}> 1000 </Text>
+      </Text>
       <TouchableOpacity style={styles.btn}>
         <Text style={{ color: '#fff' }}>Commencer</Text>
       </TouchableOpacity>
@@ -24,10 +29,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  txt: {
+    marginTop: Dimensions.get('window').height * 0.02,
+    },
   btn: {
-    padding: 10,
+    padding: Dimensions.get('window').width * 0.03,
     backgroundColor: Colors.primary,
-    borderRadius: 5,
-    marginTop: 25,
+    borderRadius: Dimensions.get('window').width * 0.015,
+    marginTop: Dimensions.get('window').height * 0.05,
   },
 });
