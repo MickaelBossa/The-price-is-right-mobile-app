@@ -23,22 +23,22 @@ export const AppTabNavigator = () => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === 'Play') {
+          if (route.name === 'TabPlay') {
             iconName = focused ? 'game-controller' : 'game-controller-outline';
-          } else if (route.name === 'History') {
+          } else if (route.name === 'TabHistory') {
             iconName = focused ? 'beer' : 'beer-outline';
-          } else if (route.name === 'Parameters') {
+          } else if (route.name === 'TabParameters') {
             iconName = focused ? 'settings' : 'settings-outline';
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}
-      initialRouteName='Play'
+      initialRouteName='TabPlay'
     >
-      <TabNavigator.Screen name='Play' component={PlayScreen} options={{title: 'Jouer'}} />
-      <TabNavigator.Screen name='History' component={HistoryScreen} options={{title: 'Historique'}} />
-      <TabNavigator.Screen name='Parameters' component={ParametersScreen} options={{title: 'Paramètres'}} />
+      <TabNavigator.Screen name='TabPlay' component={PlayScreen} options={{title: 'Jouer'}} />
+      <TabNavigator.Screen name='TabHistory' component={HistoryScreen} options={{title: 'Historique'}} />
+      <TabNavigator.Screen name='TabParameters' component={ParametersScreen} options={{title: 'Paramètres'}} />
     </TabNavigator.Navigator>
   );
 };

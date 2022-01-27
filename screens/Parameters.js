@@ -11,28 +11,28 @@ import {
   Alert,
 } from 'react-native';
 import Colors from '../constants/Colors';
+import { useSelector, useDispatch } from 'react-redux';
+import * as gameActions from '../store/actions/game';
 
 export default function Parameters() {
+  // Variables
+  const minimum = useSelector(state => state.minimum);
+  const maximum = useSelector(state => state.maximum)
+  const dispatch = useDispatch();
+
   // States
-  const [minPrice, setMinPrice] = useState('0');
-  const [maxPrice, setMaxPrice] = useState('1000');
-  const [errorInput, setErrorInput] = useState(false)
+  const [minPrice, setMinPrice] = useState(minimum);
+  const [maxPrice, setMaxPrice] = useState(maximum);
 
   // Fonctions
-  const checkValidity = (e, input) => {
-    
-    // Vérifier que les valeurs sont corrects
-    if(isNaN(e)) {
-      setErrorInput(true)
-    } else {
-      setErrorInput(false);
-      setMinPrice(e)
-    }
-  };
-
   const onSubmitPressedHandler = () => {
-    // Fermer le clavier
-    Keyboard.dismiss();
+    if(minPrice < maxPrice && minPrice >= 0 && maxPrice >= 0) {
+      dispatch(gameActions.updateVariables(minPrice, maxPrice));
+      Alert.alert('Sauvegarde effectuée', 'Vos modifications ont été sauvegardées avec succès')
+      Keyboard.dismiss();
+    } else {
+      Alert.alert('Une erreur est survenue', 'Veuillez vérifier vos informations')
+    }
   };
 
   return (
@@ -42,30 +42,24 @@ export default function Parameters() {
         <View style={styles.form}>
           <Text style={styles.txt}>Prix minimum</Text>
           <TextInput
-            style={errorInput ? styles.errorInput : styles.input}
-            placeholder={minPrice}
+            style={styles.input}
+            placeholder={'0'}
             placeholderTextColor={'black'}
-            onChangeText={(e, input) => checkValidity(e, setMinPrice)}
-            value={minPrice}
-            keyboardType='number-pad'
+            onChangeText={setMinPrice}
+            value={minPrice.toString()}
+            keyboardType='numeric'
           />
-          <Text style={styles.errorMsg}>
-            {errorInput ? "Ceci n'est pas un nombre" : ''}
-          </Text>
         </View>
         <View style={styles.form}>
           <Text style={styles.txt}>Prix maximum</Text>
           <TextInput
-            style={errorInput ? styles.errorInput : styles.input}
-            placeholder={maxPrice}
+            style={styles.input}
+            placeholder={'1000'}
             placeholderTextColor={'black'}
-            onChangeText={checkValidity}
-            value={maxPrice}
-            keyboardType='number-pad'
+            onChangeText={setMaxPrice}
+            value={maxPrice.toString()}
+            keyboardType='numeric'
           />
-          <Text style={styles.errorMsg}>
-            {errorInput ? "Ceci n'est pas un nombre" : ''}
-          </Text>
         </View>
       </View>
       <TouchableOpacity
@@ -110,17 +104,6 @@ const styles = StyleSheet.create({
     width: '85%',
     height: '17%',
     borderRadius: 3,
-  },
-  errorInput: {
-    backgroundColor: '#fff',
-    width: '85%',
-    height: '17%',
-    borderRadius: 3,
-    backgroundColor: '#F45A5F',
-  },
-  errorMsg: {
-    color: '#F45A5F',
-    marginTop: 1,
   },
   txt: {
     width: '85%',
