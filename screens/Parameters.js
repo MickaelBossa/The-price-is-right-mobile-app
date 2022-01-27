@@ -1,5 +1,5 @@
 // Librairies
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -13,26 +13,41 @@ import {
 import Colors from '../constants/Colors';
 import { useSelector, useDispatch } from 'react-redux';
 import * as gameActions from '../store/actions/game';
+import { useForm, Controller } from 'react-hook-form';
 
 export default function Parameters() {
   // Variables
-  const minimum = useSelector(state => state.minimum);
-  const maximum = useSelector(state => state.maximum)
+  const minimum = useSelector((state) => state.minimum);
+  const maximum = useSelector((state) => state.maximum);
   const dispatch = useDispatch();
-
-  // States
-  const [minPrice, setMinPrice] = useState(minimum);
-  const [maxPrice, setMaxPrice] = useState(maximum);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   // Fonctions
-  const onSubmitPressedHandler = () => {
-    if(minPrice < maxPrice && minPrice >= 0 && maxPrice >= 0) {
-      dispatch(gameActions.updateVariables(minPrice, maxPrice));
-      Alert.alert('Sauvegarde effectuée', 'Vos modifications ont été sauvegardées avec succès')
+  const onSubmitPressedHandler = (data) => {
+    if (
+      data.minimumInput < data.maximumInput &&
+      data.minimumInput >= 0 &&
+      data.maximumInput >= 0
+    ) {
+      dispatch(
+        gameActions.updateVariables(data.minimumInput, data.maximumInput),
+      );
+      Alert.alert(
+        'Sauvegarde effectuée',
+        'Vos modifications ont été sauvegardées avec succès',
+      );
       Keyboard.dismiss();
     } else {
-      Alert.alert('Une erreur est survenue', 'Veuillez vérifier vos informations')
+      Alert.alert(
+        'Une erreur est survenue',
+        'Veuillez vérifier vos informations',
+      );
     }
+    console.log(data);
   };
 
   return (
@@ -41,31 +56,43 @@ export default function Parameters() {
       <View style={styles.parametersCard}>
         <View style={styles.form}>
           <Text style={styles.txt}>Prix minimum</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={'0'}
-            placeholderTextColor={'black'}
-            onChangeText={setMinPrice}
-            value={minPrice.toString()}
-            keyboardType='numeric'
+          <Controller
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <TextInput
+                style={styles.input}
+                placeholder='0'
+                keyboardType='numeric'
+                value={value}
+                onChangeText={(value) => onChange(value)}
+              />
+            )}
+            name='minimumInput'
+            defaultValue={minimum.toString()}
           />
         </View>
         <View style={styles.form}>
           <Text style={styles.txt}>Prix maximum</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={'1000'}
-            placeholderTextColor={'black'}
-            onChangeText={setMaxPrice}
-            value={maxPrice.toString()}
-            keyboardType='numeric'
+          <Controller
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <TextInput
+                style={styles.input}
+                placeholder='1000'
+                keyboardType='numeric'
+                value={value}
+                onChangeText={(value) => onChange(value)}
+              />
+            )}
+            name='maximumInput'
+            defaultValue={maximum.toString()}
           />
         </View>
       </View>
       <TouchableOpacity
         style={styles.btn}
         activeOpacity={0.8}
-        onPress={onSubmitPressedHandler}
+        onPress={handleSubmit(onSubmitPressedHandler)}
       >
         <Text style={{ color: '#fff' }}>Sauvegarder</Text>
       </TouchableOpacity>
