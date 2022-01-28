@@ -26,13 +26,17 @@ export default function Parameters() {
     formState: { errors },
   } = useForm();
 
+  let errorStyle;
+  if (errors.maximumInput) {
+    errorStyle = {
+      borderColor: Colors.primary,
+      borderWidth: 3,
+    };
+  }
+
   // Fonctions
   const onSubmitPressedHandler = (data) => {
-    if (
-      data.minimumInput < data.maximumInput &&
-      data.minimumInput >= 0 &&
-      data.maximumInput >= 0
-    ) {
+    if (Number(data.minimumInput) < Number(data.maximumInput)) {
       dispatch(
         gameActions.updateVariables(data.minimumInput, data.maximumInput),
       );
@@ -47,7 +51,13 @@ export default function Parameters() {
         'Veuillez vérifier vos informations',
       );
     }
-    console.log(data);
+  };
+
+  const onError = (data) => {
+    Alert.alert(
+      'Une erreur est survenue',
+      'Veuillez vérifier votre formulaire',
+    );
   };
 
   return (
@@ -69,7 +79,20 @@ export default function Parameters() {
             )}
             name='minimumInput'
             defaultValue={minimum.toString()}
+            rules={{
+              min: {
+                value: 0,
+                message: 'La valeur doit être supérieur ou égale à 0',
+              },
+              required: {
+                value: true,
+                message: 'Vous devez entrer une valeur',
+              },
+            }}
           />
+          {errors.minimumInput && (
+            <Text style={styles.error}>{errors.minimumInput.message}</Text>
+          )}
         </View>
         <View style={styles.form}>
           <Text style={styles.txt}>Prix maximum</Text>
@@ -77,7 +100,7 @@ export default function Parameters() {
             control={control}
             render={({ field: { value, onChange } }) => (
               <TextInput
-                style={styles.input}
+                style={{ ...styles.input, ...errorStyle }}
                 placeholder='1000'
                 keyboardType='numeric'
                 value={value}
@@ -86,13 +109,26 @@ export default function Parameters() {
             )}
             name='maximumInput'
             defaultValue={maximum.toString()}
+            rules={{
+              min: {
+                value: 0,
+                message: 'La valeur doit être supérieur ou égale à 0',
+              },
+              required: {
+                value: true,
+                message: 'Vous devez entrer une valeur',
+              },
+            }}
           />
+          {errors.maximumInput && (
+            <Text style={styles.error}>{errors.maximumInput.message}</Text>
+          )}
         </View>
       </View>
       <TouchableOpacity
         style={styles.btn}
         activeOpacity={0.8}
-        onPress={handleSubmit(onSubmitPressedHandler)}
+        onPress={handleSubmit(onSubmitPressedHandler, onError)}
       >
         <Text style={{ color: '#fff' }}>Sauvegarder</Text>
       </TouchableOpacity>
@@ -130,7 +166,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: '85%',
     height: '17%',
-    borderRadius: 3,
+    borderRadius: 5,
   },
   txt: {
     width: '85%',
@@ -142,5 +178,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     borderRadius: Dimensions.get('window').width * 0.015,
     marginTop: Dimensions.get('window').height * 0.05,
+  },
+  error: {
+    color: Colors.primary,
   },
 });
