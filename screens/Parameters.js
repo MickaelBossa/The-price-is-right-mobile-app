@@ -9,6 +9,9 @@ import {
   TouchableOpacity,
   Keyboard,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Colors from '../constants/Colors';
 import { useSelector, useDispatch } from 'react-redux';
@@ -61,78 +64,85 @@ export default function Parameters() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Paramètres</Text>
-      <View style={styles.parametersCard}>
-        <View style={styles.form}>
-          <Text style={styles.txt}>Prix minimum</Text>
-          <Controller
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <TextInput
-                style={styles.input}
-                placeholder='0'
-                keyboardType='numeric'
-                value={value}
-                onChangeText={(value) => onChange(value)}
-              />
-            )}
-            name='minimumInput'
-            defaultValue={minimum.toString()}
-            rules={{
-              min: {
-                value: 0,
-                message: 'La valeur doit être supérieur ou égale à 0',
-              },
-              required: {
-                value: true,
-                message: 'Vous devez entrer une valeur',
-              },
-            }}
-          />
-          {errors.minimumInput && (
-            <Text style={styles.error}>{errors.minimumInput.message}</Text>
-          )}
-        </View>
-        <View style={styles.form}>
-          <Text style={styles.txt}>Prix maximum</Text>
-          <Controller
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <TextInput
-                style={{ ...styles.input, ...errorStyle }}
-                placeholder='1000'
-                keyboardType='numeric'
-                value={value}
-                onChangeText={(value) => onChange(value)}
-              />
-            )}
-            name='maximumInput'
-            defaultValue={maximum.toString()}
-            rules={{
-              min: {
-                value: 0,
-                message: 'La valeur doit être supérieur ou égale à 0',
-              },
-              required: {
-                value: true,
-                message: 'Vous devez entrer une valeur',
-              },
-            }}
-          />
-          {errors.maximumInput && (
-            <Text style={styles.error}>{errors.maximumInput.message}</Text>
-          )}
-        </View>
-      </View>
-      <TouchableOpacity
-        style={styles.btn}
-        activeOpacity={0.8}
-        onPress={handleSubmit(onSubmitPressedHandler, onError)}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <Text style={{ color: '#fff' }}>Sauvegarder</Text>
-      </TouchableOpacity>
-    </View>
+        <View style={styles.container}>
+          <Text style={styles.title}>Paramètres</Text>
+          <View style={styles.parametersCard}>
+            <View style={styles.form}>
+              <Text style={styles.txt}>Prix minimum</Text>
+              <Controller
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <TextInput
+                    style={styles.input}
+                    placeholder='0'
+                    keyboardType='numeric'
+                    value={value}
+                    onChangeText={(value) => onChange(value)}
+                  />
+                )}
+                name='minimumInput'
+                defaultValue={minimum.toString()}
+                rules={{
+                  min: {
+                    value: 0,
+                    message: 'La valeur doit être supérieur ou égale à 0',
+                  },
+                  required: {
+                    value: true,
+                    message: 'Vous devez entrer une valeur',
+                  },
+                }}
+              />
+              {errors.minimumInput && (
+                <Text style={styles.error}>{errors.minimumInput.message}</Text>
+              )}
+            </View>
+            <View style={styles.form}>
+              <Text style={styles.txt}>Prix maximum</Text>
+              <Controller
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <TextInput
+                    style={{ ...styles.input, ...errorStyle }}
+                    placeholder='1000'
+                    keyboardType='numeric'
+                    value={value}
+                    onChangeText={(value) => onChange(value)}
+                  />
+                )}
+                name='maximumInput'
+                defaultValue={maximum.toString()}
+                rules={{
+                  min: {
+                    value: 0,
+                    message: 'La valeur doit être supérieur ou égale à 0',
+                  },
+                  required: {
+                    value: true,
+                    message: 'Vous devez entrer une valeur',
+                  },
+                }}
+              />
+              {errors.maximumInput && (
+                <Text style={styles.error}>{errors.maximumInput.message}</Text>
+              )}
+            </View>
+          </View>
+          <TouchableOpacity
+            style={styles.btn}
+            activeOpacity={0.8}
+            onPress={handleSubmit(onSubmitPressedHandler, onError)}
+          >
+            <Text style={{ color: '#fff' }}>Sauvegarder</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 
